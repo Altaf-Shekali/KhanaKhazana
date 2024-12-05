@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Basic",
+    "description": "Affordable plan with basic features.",
+    "benefits": ["30 meals + multicity flexibility", "Monthly renewal", "Basic customer support"],
+    "price": "1500",
+    "logo": "/bronze.jpg",
+    "payment_button_id": "pl_OHWOcl0ZITjYzN" 
+  },
+  {
+    "name": "Silver",
+    "description": "Mid-tier plan with additional benefits.",
+    "benefits": ["30 meals with unlimited food + multicity flexibility", "Monthly renewal", "Priority support"],
+    "price": "1700",
+    "logo": "/silver.jpg",
+    "payment_button_id": "pl_OHWOcl0ZITjYzN" 
+  },
+  {
+    "name": "Gold",
+    "description": "Premium plan with maximum benefits.",
+    "benefits": ["35 meals with unlimited food + multistate flexibility", "Monthly renewal", "24/7 support"],
+    "price": "1900",
+    "logo": "/gold.jpg",
+    "payment_button_id": "pl_OHWOcl0ZITjYzN"
+  }
+]

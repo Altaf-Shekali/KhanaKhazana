@@ -1,0 +1,43 @@
+[
+    {
+      "name": "Kitchen 1",
+      "description": "free",
+      "image": "1.jpg",
+      "location":"Belagavi",
+       "rating": 4
+    },
+    {
+      "name": "Kitchen 2",
+      "description": "enjoy",
+      "image": "2.jpg",
+      "location":"Banglore",
+      "rating": 3
+    },
+    {
+      "name": "Kitchen 3",
+      "description": "free",
+      "image": "3.jpg",
+      "location":"Hubli",
+      "rating": 4.5
+    },
+    {
+        "name": "Kitchen 4",
+        "description": "free",
+        "image": "4.jpg",
+        "location":"Dharwad",
+        "rating": 5
+      },
+      {
+        "name": "Kitchen 5",
+        "description": "free",
+        "location":"Belagavi",
+        "image": "5.jpg"
+      },
+      {
+        "name": "Kitchen 6",
+        "description": "free",
+        "location":"Belagavi",
+        "image": "6.jpg"
+      }
+  ]
+  
