@@ -9,4 +9,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  base: "./", // Ensures proper asset loading in Netlify
+  build: {
+    outDir: "dist", // Ensures build output goes into "dist"
+  },
 });
