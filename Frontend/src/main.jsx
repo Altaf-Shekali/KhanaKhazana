@@ -4,6 +4,7 @@ import App from './App.jsx';
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import AuthProvider from './conetxt/AuthProvider.jsx';
+import { LanguageProvider } from './conetxt/language-context.jsx';
 
 // Ensure dark mode support is initialized
 if (localStorage.getItem('theme') === 'dark') {
@@ -14,10 +15,12 @@ if (localStorage.getItem('theme') === 'dark') {
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
+    <BrowserRouter future={{ v7_relativeSplatPath: true }}>
+    <AuthProvider>
+    <LanguageProvider>
         <App />
-      </AuthProvider>
+    </LanguageProvider>
+    </AuthProvider>
     </BrowserRouter>
   </StrictMode>
 );

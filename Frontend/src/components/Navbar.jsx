@@ -1,140 +1,215 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Login from '../components/Login';
+import { Menu, X, Globe, Sun, Moon, User } from 'lucide-react';
 import { useAuth } from '../conetxt/AuthProvider';
+import { useLanguage, languages } from '../conetxt/language-context';
+import { getText } from '../../utils/languageutils';
+import Login from '../components/Login';
 
-function Navbar() {
-  const [authUser] = useAuth();
+const Navbar = () => {
+  const { authUser } = useAuth(); // Destructure authUser from useAuth
+  const { language, changeLanguage } = useLanguage(); // Destructure language and changeLanguage from useLanguage
   const [sticky, setSticky] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      setDarkMode(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
       setSticky(window.scrollY > 0);
     };
     window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+
+    // Check localStorage for logged-in user
+    const userData = JSON.parse(localStorage.getItem("Users"));
+    if (userData) {
+      setIsLoggedIn(true); // If user exists in localStorage, show Profile button
+    }
+
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Redirect to profile on successful login
+  useEffect(() => {
+    if (authUser) {
+      setIsLoggedIn(true);
+      navigate('/Profile');
+    }
+  }, [authUser, navigate]);
 
   const toggleTheme = () => {
     setDarkMode((prevMode) => {
       const newMode = !prevMode;
-      if (newMode) {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-      }
+      document.documentElement.classList.toggle('dark', newMode);
+      localStorage.setItem('theme', newMode ? 'dark' : 'light');
       return newMode;
     });
   };
 
+  const handleLanguageChange = (langCode) => {
+    changeLanguage(langCode);
+    setIsLangMenuOpen(false);
+  };
+
   const navItems = (
     <>
-      <li><Link to="/">Home</Link></li>
-      <li><Link to="/Aboutus">About Us</Link></li>
-      <li><Link to="/Membership">Membership</Link></li>
-      <li><Link to="/kitchen">Kitchens</Link></li>
-      {!authUser && <li><Link to="/Signup">Signup</Link></li>}
+      <li>
+        <Link className="hover:text-primary transition-colors duration-300" to="/">
+          {getText('Home', language)}
+        </Link>
+      </li>
+      <li>
+        <Link className="hover:text-primary transition-colors duration-300" to="/AddKitchen">
+          {getText('Add Kitchen', language)}
+        </Link>
+      </li>
+      <li>
+        <Link className="hover:text-primary transition-colors duration-300" to="/Membership">
+          {getText('Plans', language)}
+        </Link>
+      </li>
+      <li>
+        <Link className="hover:text-primary transition-colors duration-300" to="/kitchen">
+          {getText('Kitchens', language)}
+        </Link>
+      </li>
+      {!authUser && (
+        <li>
+          <Link className="hover:text-primary transition-colors duration-300" to="/Signup">
+            {getText('Signup', language)}
+          </Link>
+        </li>
+      )}
     </>
   );
 
   return (
-    <div
-      className={`w-full fixed top-0 left-0 right-0 z-50 ${
-        sticky ? 'shadow-md bg-base-200 transition-all' : ''
+    <nav
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+        sticky ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg shadow-sm' : ''
       }`}
     >
-      <div className="navbar w-full px-4 md:px-20">
-        {/* Navbar Start */}
-        <div className="navbar-start">
-          <button
-            className="lg:hidden p-2 border rounded-md mr-2"
-            onClick={() => setMenuOpen((prev) => !prev)}
-            aria-label="Toggle Menu"
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link
+            to="/"
+            className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent"
           >
-            ☰
-          </button>
-          <a className="btn btn-ghost text-xl text-orange-500">Khana Khazana</a>
-        </div>
+            Khana Khazana
+          </Link>
 
-        {/* Navbar Center - Desktop View */}
-        <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1">{navItems}</ul>
-        </div>
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-8">
+            <ul className="flex space-x-6">{navItems}</ul>
+          </div>
 
-        {/* Navbar End */}
-        <div className="navbar-end flex items-center gap-4">
-          {/* Theme Toggle */}
-          <label className="swap swap-rotate">
-            <input
-              type="checkbox"
-              className="theme-controller"
-              checked={darkMode}
-              onChange={toggleTheme}
-            />
-            {/* Sun Icon */}
-            <svg
-              className="swap-off h-10 w-10 fill-current"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" />
-            </svg>
-            {/* Moon Icon */}
-            <svg
-              className="swap-on h-10 w-10 fill-current"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" />
-            </svg>
-          </label>
+          {/* Right Side Controls */}
+          <div className="flex items-center gap-4">
+            {/* Language Selector */}
+            <div className="relative">
+              <button
+                onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              >
+                <div className="flex items-center gap-1">
+                  <Globe className="w-5 h-5" />
+                  <span className="text-sm">{languages[language].code.toUpperCase()}</span>
+                </div>
+              </button>
 
-          {authUser ? (
+              {isLangMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 origin-top-right rounded-xl bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5">
+                  {Object.values(languages).map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => handleLanguageChange(lang.code)}
+                      className={`w-full px-4 py-3 text-sm text-left ${
+                        lang.code === language
+                          ? 'bg-gray-100 dark:bg-gray-700'
+                          : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+                      } transition-colors first:rounded-t-xl last:rounded-b-xl`}
+                    >
+                      {lang.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Theme Toggle */}
             <button
-              className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 duration-300"
-              onClick={() => navigate('/Profile')}
+              onClick={toggleTheme}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
-              Profile
+              {darkMode ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
             </button>
-          ) : (
-            <div>
-              <a
-                className="bg-black text-white px-3 py-1 rounded-md hover:bg-slate-800 duration-300 cursor-pointer"
+
+            {/* Profile/Login Button */}
+            {isLoggedIn ? (
+              <button
+                onClick={() => navigate('/Profile')}
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all"
+              >
+                <User className="w-5 h-5" />
+                <span className="hidden sm:inline">Profile</span>
+              </button>
+            ) : (
+              <button
                 onClick={() => document.getElementById('my_modal_3')?.showModal()}
+                className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
               >
                 Login
-              </a>
-              <Login />
-            </div>
-          )}
-        </div>
-      </div>
+              </button>
+            )}
 
-      {/* Mobile Dropdown Menu */}
-      {menuOpen && (
-        <div className="bg-white dark:bg-gray-800 lg:hidden shadow-md absolute top-full left-0 w-full">
-          <ul className="menu menu-vertical p-4 space-y-2">{navItems}</ul>
+            {/* Mobile Menu Button */}
+            <button
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
-      )}
-    </div>
+
+        {/* Mobile Menu */}
+        {menuOpen && (
+          <div className="lg:hidden absolute inset-x-0 top-16 bg-white dark:bg-gray-900 shadow-lg rounded-b-xl">
+            <ul className="px-4 py-3 space-y-2">{navItems}</ul>
+            <div className="border-t dark:border-gray-800 p-4">
+              {isLoggedIn ? (
+                <button
+                  onClick={() => navigate('/Profile')}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg"
+                >
+                  <User className="w-5 h-5" />
+                  Profile
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    document.getElementById('my_modal_3')?.showModal();
+                    setMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-2 bg-gray-900 text-white rounded-lg"
+                >
+                  Login
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+      <Login />
+    </nav>
   );
-}
+};
 
 export default Navbar;

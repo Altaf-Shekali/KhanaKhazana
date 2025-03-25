@@ -8,9 +8,10 @@ import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';
 
 function Signup() {
-  const location=useLocation();
-  const navigate=useNavigate();
-  const from=location.state?.pathname || "/"
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.pathname || "/";
+
   const {
     register,
     handleSubmit,
@@ -23,13 +24,13 @@ function Signup() {
       email: data.email,
       password: data.password
     };
-    await axios.post("http://localhost:4100/user/signup", userInfo)
+
+    await axios.post("http://localhost:4100/user/signup", userInfo)  // Updated endpoint
       .then((res) => {
         console.log(res.data);
         if (res.data) {
           toast.success("Signed in successfully");
-          navigate(from,{replace:true});
-    
+          navigate("/Profile")
         }
 
         localStorage.setItem("Users", JSON.stringify(res.data.user));
@@ -45,7 +46,7 @@ function Signup() {
   return (
     <div className="flex flex-col min-h-screen dark:text-white">
       {/* Navbar */}
-      <Navbar/>
+      <Navbar />
 
       {/* Main Content */}
       <div className="flex-grow flex items-center justify-center px-4 py-8">
@@ -53,6 +54,7 @@ function Signup() {
           <h3 className="text-2xl font-semibold text-center mb-6 text-gray-800 dark:text-white">
             Signup
           </h3>
+
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="space-y-6"
