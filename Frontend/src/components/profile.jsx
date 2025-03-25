@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import QRCode from "react-qr-code";
-import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { FiMail, FiCalendar, FiPackage, FiSettings, FiClock, FiLogOut, FiStar } from "react-icons/fi";
 
@@ -244,7 +243,6 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navbar />
       <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
         {user ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

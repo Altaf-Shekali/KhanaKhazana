@@ -17,19 +17,22 @@ const KitchenLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await axios.post('http://localhost:4100/kitchen/login', formData);
-
-      if (response.data) {
+  
+      if (response.data && response.data.kitchen) {  // Fix here
         toast.success('Login successful');
-        localStorage.setItem('KitchenOwner', JSON.stringify(response.data.user));
+        localStorage.setItem('KitchenOwner', JSON.stringify(response.data.kitchen)); // Fix here
         navigate('/kitchendashboard');
+      } else {
+        toast.error("Invalid response from server!");
       }
     } catch (error) {
       toast.error('Invalid credentials or user not found.');
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

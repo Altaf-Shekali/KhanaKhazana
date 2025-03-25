@@ -3,7 +3,6 @@ import Slider from 'react-slick';
 import { useAuth } from '../conetxt/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import plans from '../../public/plans.json';
-import Navbar from './Navbar';
 
 const Membership = () => {
   const [authUser] = useAuth();
@@ -127,7 +126,6 @@ const Membership = () => {
 
   return (
     <>
-      <Navbar />
       <div className="max-w-screen mx-auto justify-center mt-20 px-4">
         <h2 className="text-center text-3xl font-bold mb-8 dark:text-white">Choose Your Membership</h2>
         <Slider {...settings}>

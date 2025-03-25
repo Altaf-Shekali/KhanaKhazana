@@ -24,7 +24,6 @@ function Basic() {
 
   return (
     <>
-      <Navbar />
       <div className="min-h-full flex flex-col items-center justify-center mt-20 px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl w-full">
           {/* Basic Plan Card */}

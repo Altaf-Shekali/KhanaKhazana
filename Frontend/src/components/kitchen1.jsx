@@ -1,10 +1,9 @@
 import React from 'react';
-import Navbar from './Navbar'; // Ensure you have the Navbar component imported
 
 function Kitchen1() {
   return (
     <>
-    <Navbar/>
+
       <main className="font-poppins dark-text-white">
         {/* Hero Section */}
         <section className="bg-orange-500 text-white text-center py-20">

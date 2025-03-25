@@ -1,5 +1,4 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
 import { useForm } from "react-hook-form";
 import Login from './Login';
 import Footer from '../components/Footer';
@@ -46,7 +45,6 @@ function Signup() {
   return (
     <div className="flex flex-col min-h-screen dark:text-white">
       {/* Navbar */}
-      <Navbar />
 
       {/* Main Content */}
       <div className="flex-grow flex items-center justify-center px-4 py-8">
