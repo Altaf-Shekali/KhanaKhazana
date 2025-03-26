@@ -18,7 +18,6 @@ function Home() {
     <Membership/>
     <Kitchens/>
     <FAQ/>
-    <Footer/>
 
     </AuthProvider>
     

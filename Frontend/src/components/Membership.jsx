@@ -9,7 +9,7 @@ const Membership = () => {
   const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [message, setMessage] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false); // Added loading state
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // Slider settings
   const settings = {
@@ -25,7 +25,6 @@ const Membership = () => {
     ],
   };
 
-  // Load Razorpay script dynamically
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
@@ -37,17 +36,15 @@ const Membership = () => {
     };
   }, []);
 
-  // Get plan color based on plan name
   const getPlanColor = (name) => {
     switch (name) {
-      case 'Bronze': return 'bg-yellow-700 text-yellow-100';
-      case 'Silver': return 'bg-gray-400 text-gray-800';
-      case 'Gold': return 'bg-yellow-500 text-yellow-100';
-      default: return 'bg-gray-200 text-gray-800';
+      case 'Bronze': return 'from-yellow-600 to-yellow-800';
+      case 'Silver': return 'from-gray-400 to-gray-600';
+      case 'Gold': return 'from-yellow-400 to-yellow-600';
+      default: return 'from-gray-200 to-gray-400';
     }
   };
 
-  // Handle payment button click
   const handlePayment = async () => {
     if (!selectedPlan || !authUser) {
       setMessage('No plan selected or user not logged in');
@@ -60,7 +57,6 @@ const Membership = () => {
     try {
       const amount = selectedPlan.price;
 
-      // Fetch order details from backend
       const response = await fetch('http://localhost:4100/v1/createorder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -81,9 +77,6 @@ const Membership = () => {
         description: `Payment for ${selectedPlan.name} Plan`,
         order_id: data.order_id,
         handler: async function (response) {
-          console.log('Payment Success:', response);
-      
-          // Verify payment with backend and update plan
           const verifyResponse = await fetch('http://localhost:4100/v1/verifypayment', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -91,8 +84,8 @@ const Membership = () => {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
-              userId: authUser._id,  // Send user ID
-              plan: selectedPlan.name.toLowerCase(), // Send selected plan
+              userId: authUser._id,
+              plan: selectedPlan.name.toLowerCase(),
             }),
           });
       
@@ -100,7 +93,6 @@ const Membership = () => {
       
           if (verifyData.success) {
             alert(`Payment Verified! ✅ Plan Activated: ${selectedPlan.name}`);
-            // **Update local storage with the updated user data from the verify endpoint**
             localStorage.setItem("Users", JSON.stringify(verifyData.user));
             navigate('/profile');
           } else {
@@ -113,7 +105,8 @@ const Membership = () => {
           contact: '9000090000',
         },
         theme: { color: '#3399cc' },
-      };      
+      };
+
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (error) {
@@ -122,66 +115,134 @@ const Membership = () => {
     } finally {
       setIsProcessing(false);
     }
-};
+  };
 
   return (
-    <>
-      <div className="max-w-screen mx-auto justify-center mt-20 px-4">
-        <h2 className="text-center text-3xl font-bold mb-8 dark:text-white">Choose Your Membership</h2>
-        <Slider {...settings}>
-          {plans.map((plan, index) => (
-            <div
-              key={index}
-              className={`p-6 cursor-pointer transform hover:scale-105 transition-transform duration-300 ${getPlanColor(plan.name)}`}
-              onClick={() => setSelectedPlan(plan)}
-            >
-              <div className="rounded-lg shadow-lg p-8 text-center">
-                <img src={plan.logo} alt={`${plan.name} logo`} className="w-24 h-24 mx-auto mb-4 rounded-full object-cover" />
-                <h3 className="text-2xl font-semibold">{plan.name}</h3>
-                <p className="text-gray-200 mb-3">{plan.description}</p>
-                <p className="text-xl font-semibold">₹{plan.price}</p>
+    <div className="max-w-screen-xl mx-auto px-4 pb-12 min-h-screen flex flex-col justify-center">
+      <h2 className="text-center text-4xl font-extrabold mb-12 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        Choose Your Membership
+      </h2>
+
+      <Slider {...settings}>
+        {plans.map((plan, index) => (
+          <div
+            key={index}
+            className="px-2 focus:outline-none"
+            onClick={() => setSelectedPlan(plan)}
+          >
+            <div className={`bg-gradient-to-br ${getPlanColor(plan.name)} rounded-xl shadow-xl p-1 hover:shadow-2xl transition-all duration-300 ${
+              selectedPlan?.name === plan.name ? 'ring-4 ring-blue-400' : ''
+            }`}>
+              <div className="bg-white dark:bg-gray-800 rounded-lg p-8 text-center h-full">
+                <img 
+                  src={plan.logo} 
+                  alt={`${plan.name} logo`} 
+                  className="w-32 h-32 mx-auto mb-6 object-contain animate-float"
+                />
+                <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  {plan.name}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-6 min-h-[80px]">
+                  {plan.description}
+                </p>
+                <div className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">
+                  ₹{plan.price}
+                  <span className="text-lg text-gray-500">/month</span>
+                </div>
               </div>
             </div>
-          ))}
-        </Slider>
+          </div>
+        ))}
+      </Slider>
 
-        {selectedPlan && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-            <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-              <h2 className="text-2xl font-bold mb-4">{selectedPlan.name} Plan Benefits</h2>
-              <ul className="text-gray-700 mb-4">
-                {selectedPlan.benefits.map((benefit, idx) => (
-                  <li key={idx} className="mb-2">- {benefit}</li>
-                ))}
-              </ul>
-              <h3 className="text-lg font-semibold mb-4">Subscribe Now:</h3>
+      {selectedPlan && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 backdrop-blur-sm">
+          <div className={`bg-gradient-to-br ${getPlanColor(selectedPlan.name)} rounded-2xl shadow-2xl p-8 w-full max-w-lg relative overflow-hidden`}>
+            <div className="absolute inset-0 bg-black/10 backdrop-blur-sm" />
+            <div className="relative z-10">
+              <h2 className="text-3xl font-bold text-white mb-6 text-center">
+                {selectedPlan.name} Plan
+              </h2>
+              
+              <div className="bg-white/90 backdrop-blur rounded-xl p-6 mb-8">
+                <h3 className="text-xl font-semibold mb-4 text-gray-800">Plan Benefits:</h3>
+                <ul className="space-y-3">
+                  {selectedPlan.benefits.map((benefit, idx) => (
+                    <li 
+                      key={idx}
+                      className="flex items-center text-gray-700"
+                    >
+                      <svg 
+                        className="w-5 h-5 text-green-600 mr-2 flex-shrink-0"
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={2} 
+                          d="M5 13l4 4L19 7" 
+                        />
+                      </svg>
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
               <div className="text-center">
                 <button
-                  className={`bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold ${
-                    isProcessing || !authUser ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  className={`bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-bold text-lg
+                    ${
+                      isProcessing || !authUser 
+                        ? 'opacity-50 cursor-not-allowed' 
+                        : 'hover:scale-105 transition-transform hover:shadow-lg'
+                    }`
+                  }
                   onClick={handlePayment}
                   disabled={isProcessing || !authUser}
-                  title={!authUser ? 'Please log in to proceed with payment' : ''}
                 >
-                  {isProcessing ? 'Processing...' : 'PAY NOW'}
+                  {isProcessing ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Processing...</span>
+                    </div>
+                  ) : (
+                    'PAY NOW'
+                  )}
                 </button>
+                
                 {!authUser && (
-                  <p className="text-red-600 mt-2">Please log in to proceed with payment.</p>
+                  <p className="text-red-100 mt-4 font-medium">
+                    Please log in to proceed with payment
+                  </p>
                 )}
               </div>
-              {message && <p className="text-red-600 mt-2">{message}</p>}
+
               <button
-                className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg"
+                className="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors"
                 onClick={() => setSelectedPlan(null)}
               >
-                Close
+                <svg
+                  className="w-8 h-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
               </button>
             </div>
           </div>
-        )}
-      </div>
-    </>
+        </div>
+      )}
+    </div>
   );
 };
 

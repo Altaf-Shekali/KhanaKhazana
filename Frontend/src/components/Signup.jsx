@@ -29,7 +29,7 @@ function Signup() {
         console.log(res.data);
         if (res.data) {
           toast.success("Signed in successfully");
-          navigate("/Profile")
+          navigate("/")
         }
 
         localStorage.setItem("Users", JSON.stringify(res.data.user));
@@ -134,9 +134,6 @@ function Signup() {
           </form>
         </div>
       </div>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }

@@ -17,6 +17,7 @@ import FAQ from './components/FaQ';
 import KitchenLogin from './components/kitchenlogin';
 import KitchenDashboard from './components/kitchendashboard';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 'react-hot-toast';
 function App() {
   const [authUser,setAuthUser]=useAuth();
@@ -44,6 +45,7 @@ function App() {
         <Route path="/kitchendashboard"element={<KitchenDashboard/>}/>
         </Routes>
         </AuthProvider>
+        <Footer/>
       <Toaster/>
        
        

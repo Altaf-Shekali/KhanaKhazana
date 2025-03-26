@@ -64,7 +64,7 @@ const Navbar = () => {
           </div>
 
           {/* Right Side Controls */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             {/* Language Selector */}
             <div className="relative">
               <button onClick={() => setIsLangMenuOpen(!isLangMenuOpen)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
