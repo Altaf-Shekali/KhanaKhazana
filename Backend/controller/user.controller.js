@@ -1,67 +1,112 @@
 import User from "../model/user.model.js";
 import bcryptjs from "bcryptjs";
 
-export const signup=async (req,res)=>{
-    try{
-        const {fullname,email,password,plan}=req.body;
-        const user= await User.findOne({email});
-        if(user){
-            return res.status(400).json({message:"User already esists" });
+// ➤ Meal Counts Based on Plans
+const PLAN_MEAL_COUNTS = {
+    basic: 30,
+    silver: 35,
+    gold: 40
+};
 
-        }
-        const hashPassword= await bcryptjs.hash(password,10);
+// ➤ USER SIGNUP FUNCTION
+export const signup = async (req, res) => {
+    const { fullname, email, password, plan } = req.body;
 
-        const createdUser=new User({
-            fullname:fullname,
-            email:email,
-            password:hashPassword,
-            plan:plan
-        });
+    try {
+        const existingUser = await User.findOne({ email });
 
-        await createdUser.save();
-        res.status(201).json({message:"user created successfully",user:{
-            _id:createdUser._id,
-            fullname:createdUser.fullname,
-            email:createdUser.email,
+        if (existingUser) {
+            return res.status(400).json({ message: "User already exists" });
         }
 
-        });
-    }
-    catch(error){
-        console.log("Error:"+ error.message);
-        res.status(500).json({message:"Internal server error"});
+        const hashPassword = await bcryptjs.hash(password, 10);
 
+        const remainingUses = PLAN_MEAL_COUNTS[plan?.toLowerCase()] || 0;  // ✅ Assign meal count based on plan
+
+        const newUser = new User({
+            fullname,
+            email,
+            password: hashPassword,
+            role: "user",
+            plan: plan || "null",
+            remainingUses  // ✅ Save remaining meals directly in DB
+        });
+
+        await newUser.save();
+
+        return res.status(201).json({
+            message: "User created successfully",
+            redirectPath: "/profile",
+            user: {
+                _id: newUser._id,
+                fullname: newUser.fullname,
+                email: newUser.email,
+                plan: newUser.plan,
+                remainingUses: newUser.remainingUses
+            },
+        });
+
+    } catch (error) {
+        console.error("Error during signup:", error.message);
+        res.status(500).json({ message: "Internal server error" });
     }
 };
+
+// ➤ USER LOGIN FUNCTION
 export const login = async (req, res) => {
+    const { email, password } = req.body;
+
     try {
-      const { email, password } = req.body;
-  
-      // Check if the user exists
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(400).json({ message: "Invalid username or password" });
-      }
-  
-      // Compare the password
-      const isMatch = await bcryptjs.compare(password, user.password);
-      if (!isMatch) {
-        return res.status(400).json({ message: "Invalid username or password" });
-      }
-  
-      // Login successful
-      res.status(200).json({
-        message: "Login successful",
-        user: {
-          _id: user._id,
-          fullname: user.fullname,
-          email: user.email,
-          plan: user.plan,
-        },
-      });
+        const existingUser = await User.findOne({ email });
+
+        if (!existingUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const isMatch = await bcryptjs.compare(password, existingUser.password);
+
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid email or password" });
+        }
+
+        return res.status(200).json({
+            message: "Login successful",
+            redirectPath: "/profile",
+            user: {
+                _id: existingUser._id,
+                fullname: existingUser.fullname,
+                email: existingUser.email,
+                plan: existingUser.plan,
+                remainingUses: existingUser.remainingUses
+            },
+        });
+
     } catch (error) {
-      console.log("Error: " + error.message);
-      res.status(500).json({ message: "Internal server error" });
+        console.error("Error during login:", error.message);
+        res.status(500).json({ message: "Internal server error" });
     }
-  };
-  
+};
+
+// ➤ UPDATE REMAINING MEALS FUNCTION
+export const updateMealCount = async (req, res) => {
+    const { userId } = req.body;
+
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (user.remainingUses > 0) {
+            user.remainingUses -= 1;  // ✅ Deduct 1 meal from the user's count
+            await user.save();
+            return res.status(200).json({ remainingUses: user.remainingUses });
+        } else {
+            return res.status(400).json({ message: "No remaining meals. Please renew your plan." });
+        }
+    } catch (error) {
+        console.error("Error updating meal count:", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};

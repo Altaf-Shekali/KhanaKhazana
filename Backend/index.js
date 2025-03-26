@@ -5,6 +5,13 @@ import cors from "cors";
 
 import kitchenRoute from "./route/kitchen.route.js";
 import userRoute from "../Backend/route/user.route.js";
+import razorpayRoute from "../Backend/route/razorpay.route.js";
+import path from "path";
+import { fileURLToPath } from 'url'; // Required for __dirname in ESM
+
+// ESM does not support __dirname directly, so we recreate it
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const app = express();
 
 app.use(cors());
@@ -25,7 +32,9 @@ try {
   
 //  routes
 app.use("/kitchen",kitchenRoute);
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.use("/user",userRoute);
+app.use("/v1",razorpayRoute);
 app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}`);
 });
