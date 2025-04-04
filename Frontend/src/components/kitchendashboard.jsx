@@ -5,7 +5,10 @@ import {
   UsersIcon,
   CurrencyRupeeIcon,
   ChartBarIcon,
+  ArrowDownTrayIcon,
 } from "@heroicons/react/24/outline";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const KitchenDashboard = () => {
   const [transactions, setTransactions] = useState([]);
@@ -46,14 +49,49 @@ const KitchenDashboard = () => {
     return acc;
   }, {});
 
-  const weeklyData = Array(4)
-    .fill(0)
-    .map((_, i) => transactions.filter((tx) => new Date(tx.date).getDate() <= (i + 1) * 7).length);
+  const revenueMap = {
+    gold: 60,
+    silver: 55,
+    basic: 50,
+    starter: 45,
+  };
+
+  const weeklyData = [0, 0, 0, 0];
+  const currentMonth = new Date().getMonth();
+
+  transactions.forEach((tx) => {
+    const date = new Date(tx.date);
+    if (date.getMonth() === currentMonth) {
+      const week = Math.floor((date.getDate() - 1) / 7);
+      if (week >= 0 && week < 4) weeklyData[week]++;
+    }
+  });
+
+  const totalRevenue = transactions.reduce(
+    (sum, tx) => sum + (revenueMap[tx.plan] || 0),
+    0
+  );
+
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    doc.text(`${kitchenName} - Transactions Report`, 20, 15);
+    autoTable(doc, {
+      startY: 20,
+      head: [["Date", "Customer", "Plan", "Amount"]],
+      body: transactions.slice(0, 20).map((tx) => [
+        new Date(tx.date).toLocaleDateString(),
+        tx.customerName,
+        tx.plan,
+        `₹${revenueMap[tx.plan] || 0}`,
+      ]),
+    });
+    doc.save("transactions_report.pdf");
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="pt-20 min-h-screen bg-gray-50 px-6 sm:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-gray-800">{kitchenName} Dashboard</h1>
         </div>
 
@@ -62,6 +100,16 @@ const KitchenDashboard = () => {
         ) : (
           <>
             {/* Stats Section */}
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={downloadPDF}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                <ArrowDownTrayIcon className="h-5 w-5" />
+                Download transaction PDF
+              </button>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               <StatCard
                 icon={<UsersIcon className="w-6 h-6" />}
@@ -78,28 +126,24 @@ const KitchenDashboard = () => {
               <StatCard
                 icon={<CurrencyRupeeIcon className="w-6 h-6" />}
                 title="Total Revenue"
-                value={`₹${transactions.reduce((sum, tx) =>
-                  sum + (tx.plan === "gold" ? 60 : tx.plan === "silver" ? 55 : 200), 0
-                )}`}
+                value={`₹${totalRevenue}`}
                 color="bg-purple-100"
               />
             </div>
 
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              {/* Plan Distribution Chart */}
               <div className="bg-white p-6 rounded-xl shadow-sm">
                 <h3 className="text-lg font-semibold mb-4">Plan Distribution</h3>
                 <div className="h-64">
                   <BarChart
                     series={[{ data: Object.values(planDistribution) }]}
                     xAxis={[{ data: Object.keys(planDistribution), scaleType: "band" }]}
-                    colors={["#3B82F6", "#10B981", "#F59E0B"]}
+                    colors={["#3B82F6", "#10B981", "#F59E0B", "#F43F5E"]}
                   />
                 </div>
               </div>
 
-              {/* Weekly Trend Chart */}
               <div className="bg-white p-6 rounded-xl shadow-sm">
                 <h3 className="text-lg font-semibold mb-4">Weekly Trend</h3>
                 <div className="h-64">
@@ -137,15 +181,15 @@ const KitchenDashboard = () => {
                                 ? "bg-amber-100 text-amber-700"
                                 : tx.plan === "silver"
                                 ? "bg-emerald-100 text-emerald-700"
-                                : "bg-blue-100 text-blue-700"
+                                : tx.plan === "basic"
+                                ? "bg-indigo-100 text-indigo-700"
+                                : "bg-pink-100 text-pink-700"
                             }`}
                           >
                             {tx.plan}
                           </span>
                         </td>
-                        <td className="py-3 font-medium">
-                          ₹{tx.plan === "gold" ? 60 : tx.plan === "silver" ? 55 :tx.plan=="basic"?50:45}
-                        </td>
+                        <td className="py-3 font-medium">₹{revenueMap[tx.plan] || 0}</td>
                       </tr>
                     ))}
                   </tbody>

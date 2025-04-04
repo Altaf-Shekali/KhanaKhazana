@@ -46,7 +46,6 @@ const KitchenSignup = () => {
         navigate('/kitchenlogin'); // Navigate to Kitchen Login after signup
       }
     } catch (error) {
-      console.error('Error adding kitchen:', error);
       alert('Error adding kitchen');
     }
   };

@@ -32,7 +32,7 @@ function Kitchenss() {
   return (
     <div className="max-w-screen-2xl container mx-auto md:px-20 px-4 min-h-screen">
       <div className="pt-28 pb-12 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent mb-4">
+        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-500 to-orange-600 bg-clip-text text-transparent mb-4">
           Discover Our Kitchens
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -42,7 +42,7 @@ function Kitchenss() {
 
         {/* Enhanced Search Bar */}
         <div className="relative flex justify-center my-12">
-          <div className="w-full max-w-2xl bg-gradient-to-r from-orange-400 to-red-500 p-1 rounded-2xl shadow-xl">
+          <div className="w-full max-w-2xl bg-gradient-to-r from-green-400 to-orange-500 p-1 rounded-2xl shadow-xl">
             <div className="flex items-center bg-white dark:bg-gray-800 rounded-xl px-4 py-3">
               <input
                 type="text"
@@ -147,12 +147,11 @@ function Kitchenss() {
                     <span>{item.location || "Location details coming soon"}</span>
                   </div>
 
-                  <Link to="/kitchen1"
-                    
-                    className="inline-block w-full text-center bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:from-orange-600 hover:to-red-700 transition-all duration-300"
-                  >
+                  <Link to={`/kitchen/${item._id}`}
+                   className="inline-block w-full text-center bg-gradient-to-r from-green-600 to-green-500 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300">
                     Explore Kitchen →
                   </Link>
+ 
                 </div>
               </div>
             ))

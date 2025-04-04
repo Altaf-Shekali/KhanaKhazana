@@ -32,14 +32,14 @@ const HeroSection = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <button 
                 onClick={() => navigate('/Signup')}
-                className="px-8 py-4 text-lg font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                className="px-8 py-4 text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
               >
                 {getText('hero.getStarted', language)}
               </button>
               
               <button 
                 onClick={() => navigate('/Membership')}
-                className="px-8 py-4 text-lg font-semibold text-green-600 border-2 border-green-600 hover:bg-green-600 hover:text-white rounded-lg transition-all duration-300 flex items-center gap-2"
+                className="px-8 py-4 text-lg font-semibold text-blue-600 border-2 border-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition-all duration-300 flex items-center gap-2"
               >
                 {getText('hero.viewPlans', language)}
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />

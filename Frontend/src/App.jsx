@@ -18,6 +18,8 @@ import KitchenLogin from './components/kitchenlogin';
 import KitchenDashboard from './components/kitchendashboard';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import KitchenMenu from './components/kitchenmenu';
+import KitchenMenuView from './components/kitchen1';
 'react-hot-toast';
 function App() {
   const [authUser,setAuthUser]=useAuth();
@@ -37,12 +39,13 @@ function App() {
         <Route path="/Login" element={<Login/>}/>
         <Route path="/profile" element={<Profile/>}/>
         <Route path="/Aboutus" element={<Aboutus/>}/>
-        <Route path="/kitchen1" element={<Kitchen1/>}/>
+        <Route path="/kitchen/:kitchenId" element={<KitchenMenuView/>}/>
         <Route path="/AdminPage" element={<AdminPage/>}/>
         <Route path="/AddKitchen" element={<AddKitchen/>} /> 
         <Route path="/FaQ"element={<FAQ/>}/>
         <Route path="/kitchenlogin"element={<KitchenLogin/>}/>
         <Route path="/kitchendashboard"element={<KitchenDashboard/>}/>
+        <Route path="/kitchenmenu"element={<KitchenMenu/>}/>
         </Routes>
         </AuthProvider>
         <Footer/>
