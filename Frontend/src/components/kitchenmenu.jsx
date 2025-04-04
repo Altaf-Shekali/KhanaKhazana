@@ -25,7 +25,7 @@ function KitchenMenu() {
 
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:4100/kitchen/menu?kitchenId=${kitchenId}`);
+      const response = await axios.get(`https://khanakhazana-4wqp.onrender.com/kitchen/menu?kitchenId=${kitchenId}`);
 
       const fullMenu = DAYS_OF_WEEK.map((day) => {
         const apiData = response.data.find((item) => item.day === day);
@@ -65,7 +65,7 @@ function KitchenMenu() {
       }));
 
       const { data } = await axios.put(
-        `http://localhost:4100/kitchen/menu`,
+        `https://khanakhazana-4wqp.onrender.com/kitchen/menu`,
         { kitchenId, menu: menuToSave },
         { headers: { "Content-Type": "application/json" } }
       );

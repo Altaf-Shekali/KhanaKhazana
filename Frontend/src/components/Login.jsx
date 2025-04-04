@@ -20,8 +20,8 @@ function Login({ isOpen, onClose, onLoginSuccess }) {
     setIsSubmitting(true);
     try {
       const endpoint = isKitchenLogin 
-        ? "http://localhost:4100/kitchen/login"
-        : "http://localhost:4100/user/login";
+        ? "https://khanakhazana-4wqp.onrender.com/kitchen/login"
+        : "https://khanakhazana-4wqp.onrender.com/user/login";
 
       const response = await axios.post(endpoint, {
         email: data.email,

@@ -28,7 +28,7 @@ const KitchenDashboard = () => {
         setKitchenName(storedKitchen.name || "Kitchen");
 
         const response = await axios.get(
-          `http://localhost:4100/kitchen/${storedKitchen._id}/transactions`
+          `https://khanakhazana-4wqp.onrender.com/kitchen/${storedKitchen._id}/transactions`
         );
 
         if (response.data.transactions) {

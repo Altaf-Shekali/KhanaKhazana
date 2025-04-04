@@ -24,7 +24,7 @@ function Signup() {
       password: data.password
     };
 
-    await axios.post("http://localhost:4100/user/signup", userInfo)  // Updated endpoint
+    await axios.post("https://khanakhazana-4wqp.onrender.com/user/signup", userInfo)  // Updated endpoint
       .then((res) => {
         console.log(res.data);
         if (res.data) {

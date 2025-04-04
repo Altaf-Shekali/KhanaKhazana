@@ -11,7 +11,7 @@ function Kitchenss() {
   useEffect(() => {
     const getKitchens = async () => {
       try {
-        const res = await axios.get("http://localhost:4100/kitchen");
+        const res = await axios.get("https://khanakhazana-4wqp.onrender.com/kitchen");
         setKitchens(res.data);
       } catch (error) {
         console.error("Error fetching kitchen data:", error);
@@ -94,7 +94,7 @@ function Kitchenss() {
                 <div className="relative overflow-hidden rounded-t-2xl">
                   {item.images && item.images.length > 0 ? (
                     <img
-                      src={`http://localhost:4100/${item.images[0]}`}
+                      src={`https://khanakhazana-4wqp.onrender.com/${item.images[0]}`}
                       alt={item.name}
                       className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-300"
                     />

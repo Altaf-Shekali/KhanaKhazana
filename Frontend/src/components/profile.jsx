@@ -56,7 +56,7 @@ const Profile = () => {
 
   const fetchKitchens = useCallback(async () => {
     try {
-      const response = await axios.get("http://localhost:4100/kitchen");
+      const response = await axios.get("https://khanakhazana-4wqp.onrender.com/kitchen");
       setKitchens(response.data);
       setFilteredKitchens(response.data);
     } catch (error) {

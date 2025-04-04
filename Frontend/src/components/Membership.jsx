@@ -57,7 +57,7 @@ const Membership = () => {
     try {
       const amount = selectedPlan.price;
 
-      const response = await fetch('http://localhost:4100/v1/createorder', {
+      const response = await fetch('https://khanakhazana-4wqp.onrender.com/v1/createorder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount }),
@@ -77,7 +77,7 @@ const Membership = () => {
         description: `Payment for ${selectedPlan.name} Plan`,
         order_id: data.order_id,
         handler: async function (response) {
-          const verifyResponse = await fetch('http://localhost:4100/v1/verifypayment', {
+          const verifyResponse = await fetch('https://khanakhazana-4wqp.onrender.com/v1/verifypayment', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
