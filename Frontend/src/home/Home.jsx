@@ -3,7 +3,7 @@ import Banner from '../components/Banner'
 import Kitchens from '../components/Kitchens'
 import Membership from '../components/Membership'
 import Aboutus from '../components/Aboutus'
-import FAQ from '../components/FaQ';
+import FAQ from '../components/FAQ'
 import AuthProvider from '../conetxt/AuthProvider';
 function Home() {
   return (

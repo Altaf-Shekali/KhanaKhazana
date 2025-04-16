@@ -111,8 +111,8 @@ function Login({ isOpen, onClose, onLoginSuccess }) {
               {...register("password", {
                 required: "Password is required",
                 minLength: {
-                  value: 4,
-                  message: "Password must be at least 6 characters"
+                  value: 3,
+                  message: "Password must be at least 3 characters"
                 }
               })}
             />
