@@ -34,7 +34,7 @@ try {
 // ✅ Register all routes
 app.use("/kitchen", kitchenRoute);
 app.use("/kitchen/menu", menuRoute);  // ✅ Ensure the menu route is registered under `/kitchen/menu`
-app.use("/user", userRoute);
+app.use("/", userRoute);
 app.use("/v1", razorpayRoute);
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 

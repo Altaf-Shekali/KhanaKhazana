@@ -20,8 +20,7 @@ export const signup = async (req, res) => {
         }
 
         const hashPassword = await bcryptjs.hash(password, 10);
-
-        const remainingUses = PLAN_MEAL_COUNTS[plan?.toLowerCase()] || 0;  // ✅ Assign meal count based on plan
+        const remainingUses = PLAN_MEAL_COUNTS[plan?.toLowerCase()] || 0;
 
         const newUser = new User({
             fullname,
@@ -29,7 +28,7 @@ export const signup = async (req, res) => {
             password: hashPassword,
             role: "user",
             plan: plan || "null",
-            remainingUses  // ✅ Save remaining meals directly in DB
+            remainingUses
         });
 
         await newUser.save();
@@ -99,7 +98,7 @@ export const updateMealCount = async (req, res) => {
         }
 
         if (user.remainingUses > 0) {
-            user.remainingUses -= 1;  // ✅ Deduct 1 meal from the user's count
+            user.remainingUses -= 1;
             await user.save();
             return res.status(200).json({ remainingUses: user.remainingUses });
         } else {
@@ -110,3 +109,23 @@ export const updateMealCount = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
+// ➤ GET USER BY ID FUNCTION
+export const getUserById = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.status(200).json(user);
+
+    } catch (error) {
+        console.error("Error fetching user:", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
