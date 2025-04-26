@@ -1,7 +1,6 @@
 import React from 'react';
 import { useForm } from "react-hook-form";
 import Login from './Login';
-import Footer from '../components/Footer';
 import toast from 'react-hot-toast';
 import axios from "axios";
 import { useLocation, useNavigate } from 'react-router-dom';

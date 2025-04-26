@@ -112,7 +112,6 @@ const Profile = () => {
     setRecentKitchens(storedRecent);
   }, [navigate, fetchKitchens]);
 
-  // debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
       setFilteredKitchens(
@@ -161,11 +160,9 @@ const Profile = () => {
       }
 
       if (parsed.remainingUses > 0) {
-        // 1) persist on server
         const res = await axios.post(UPDATE_MEAL_COUNT_URL, { userId: parsed.id });
         const newRemaining = res.data.remainingUses;
 
-        // 2) update local
         setUser(prev => {
           const updated = { ...prev, remainingUses: newRemaining };
           localStorage.setItem("Users", JSON.stringify(updated));
@@ -174,16 +171,13 @@ const Profile = () => {
         setCount(newRemaining);
         setQrData(JSON.stringify({ ...parsed, remainingUses: newRemaining }));
 
-        // 3) recent kitchens
         setRecentKitchens(prev => {
           const updated = [selectedKitchen, ...prev.filter(k => k !== selectedKitchen)].slice(0, 3);
           localStorage.setItem("RecentKitchens", JSON.stringify(updated));
           return updated;
         });
 
-        // 4) record transaction
         await recordMealTransaction(parsed);
-
         toast.success(`Meal added to ${selectedKitchen}!`);
       } else {
         toast.error("No remaining meals! Please renew your plan.");
@@ -275,7 +269,7 @@ const Profile = () => {
     const cfg = planConfig[user.plan?.toLowerCase()] || planConfig.default;
     return (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left */}
+        {/* Left Column */}
         <div className="lg:col-span-1 space-y-6">
           <div className={`bg-white rounded-xl shadow-lg p-6 border-t-4 ${cfg.accent}`}>
             <div className="flex flex-col items-center">
@@ -319,9 +313,9 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Right */}
+        {/* Right Column */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Subscription */}
+          {/* Subscription Details */}
           {user.plan && (
             <div className={`bg-white rounded-xl shadow-lg p-6 border-t-4 ${cfg.accent}`}>
               <h3 className="text-lg font-semibold mb-4">Subscription Details</h3>
@@ -354,7 +348,7 @@ const Profile = () => {
             </div>
           )}
 
-          {/* QR Code */}
+          {/* QR Code Section */}
           {user.plan && (
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h3 className="text-lg font-semibold mb-4 flex items-center">
@@ -379,7 +373,7 @@ const Profile = () => {
             </div>
           )}
 
-          {/* Find Kitchens */}
+          {/* Kitchen Selection Section */}
           {user.plan && (
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h3 className="text-lg font-semibold mb-4 flex items-center">

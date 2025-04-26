@@ -49,44 +49,44 @@ function Login({ isOpen, onClose, onLoginSuccess }) {
   if (!isOpen) return null;
 
   return (
-    <dialog open className="modal modal-bottom sm:modal-middle">
-      <div className="modal-box">
-        <form onSubmit={handleSubmit(onSubmit)}>
+    <div className={`modal ${isOpen ? 'modal-open' : ''}`}>
+      <div className="modal-box relative max-w-md p-6 sm:p-8">
+        <button
+          type="button"
+          className="btn btn-circle btn-ghost btn-sm absolute right-4 top-4"
+          onClick={onClose}
+        >
+          ✕
+        </button>
+
+        <h3 className="text-2xl font-bold mb-6 text-center">Welcome Back</h3>
+
+        <div className="flex gap-2 mb-6">
           <button
             type="button"
-            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-            onClick={onClose}
+            className={`btn flex-1 ${!isKitchenLogin ? 'btn-primary' : 'btn-ghost'}`}
+            onClick={() => setIsKitchenLogin(false)}
           >
-            ✕
+            User Login
           </button>
+          <button
+            type="button"
+            className={`btn flex-1 ${isKitchenLogin ? 'btn-primary' : 'btn-ghost'}`}
+            onClick={() => setIsKitchenLogin(true)}
+          >
+            Kitchen Login
+          </button>
+        </div>
 
-          <h3 className="font-bold text-lg mb-4">Login</h3>
-
-          <div className="tabs tabs-boxed mb-6">
-            <button
-              type="button"
-              className={`tab tab-lg flex-1 ${!isKitchenLogin ? "tab-active" : ""}`}
-              onClick={() => setIsKitchenLogin(false)}
-            >
-              User Login
-            </button>
-            <button
-              type="button"
-              className={`tab tab-lg flex-1 ${isKitchenLogin ? "tab-active" : ""}`}
-              onClick={() => setIsKitchenLogin(true)}
-            >
-              Kitchen Login
-            </button>
-          </div>
-
-          <div className="form-control mb-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="form-control">
             <label className="label">
-              <span className="label-text">Email</span>
+              <span className="label-text text-lg">Email</span>
             </label>
             <input
               type="email"
               placeholder="user@example.com"
-              className={`input input-bordered w-full ${errors.email ? "input-error" : ""}`}
+              className={`input input-bordered input-lg w-full ${errors.email ? 'input-error' : ''}`}
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -100,14 +100,14 @@ function Login({ isOpen, onClose, onLoginSuccess }) {
             )}
           </div>
 
-          <div className="form-control mb-6">
+          <div className="form-control">
             <label className="label">
-              <span className="label-text">Password</span>
+              <span className="label-text text-lg">Password</span>
             </label>
             <input
               type="password"
               placeholder="••••••••"
-              className={`input input-bordered w-full ${errors.password ? "input-error" : ""}`}
+              className={`input input-bordered input-lg w-full ${errors.password ? 'input-error' : ''}`}
               {...register("password", {
                 required: "Password is required",
                 minLength: {
@@ -123,7 +123,7 @@ function Login({ isOpen, onClose, onLoginSuccess }) {
 
           <button 
             type="submit" 
-            className="btn btn-primary w-full mb-4"
+            className="btn btn-primary btn-lg w-full mt-6"
             disabled={isSubmitting}
           >
             {isSubmitting ? (
@@ -136,12 +136,12 @@ function Login({ isOpen, onClose, onLoginSuccess }) {
             )}
           </button>
 
-          <div className="text-center">
+          <div className="text-center pt-4">
             <span className="text-sm">
               Don't have an account?{" "}
               <Link
                 to="/signup"
-                className="link link-primary"
+                className="link link-primary font-semibold"
                 onClick={onClose}
               >
                 Sign up
@@ -150,7 +150,10 @@ function Login({ isOpen, onClose, onLoginSuccess }) {
           </div>
         </form>
       </div>
-    </dialog>
+      
+      {/* Modal Backdrop */}
+      <div className="modal-backdrop" onClick={onClose}></div>
+    </div>
   );
 }
 
