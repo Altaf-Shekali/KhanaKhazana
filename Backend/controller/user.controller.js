@@ -20,7 +20,8 @@ export const signup = async (req, res) => {
         }
 
         const hashPassword = await bcryptjs.hash(password, 10);
-        const remainingUses = PLAN_MEAL_COUNTS[plan?.toLowerCase()] || 0;
+
+        const remainingUses = PLAN_MEAL_COUNTS[plan?.toLowerCase()] || 0;  // ✅ Assign meal count based on plan
 
         const newUser = new User({
             fullname,
@@ -28,7 +29,7 @@ export const signup = async (req, res) => {
             password: hashPassword,
             role: "user",
             plan: plan || "null",
-            remainingUses
+            remainingUses  // ✅ Save remaining meals directly in DB
         });
 
         await newUser.save();
@@ -98,7 +99,7 @@ export const updateMealCount = async (req, res) => {
         }
 
         if (user.remainingUses > 0) {
-            user.remainingUses -= 1;
+            user.remainingUses -= 1;  // ✅ Deduct 1 meal from the user's count
             await user.save();
             return res.status(200).json({ remainingUses: user.remainingUses });
         } else {
